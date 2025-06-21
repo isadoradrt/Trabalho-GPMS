@@ -1,26 +1,57 @@
 import pygame
 import sys
-from jogo.constantes import LARGURA, ALTURA, FPS
+import os
 
-# Inicialização do Pygame
+# Inicialização
 pygame.init()
+LARGURA, ALTURA = 1280, 720
 tela = pygame.display.set_mode((LARGURA, ALTURA))
-pygame.display.set_caption("Pandemic")
+pygame.display.set_caption("Pandemic: Hollow Knight")
+FPS = 60
 clock = pygame.time.Clock()
 
+# Carregar imagem de fundo
+caminho_fundo = os.path.join("designs", "mainscreen.png")
+fundo = pygame.image.load(caminho_fundo).convert()
+fundo = pygame.transform.scale(fundo, (LARGURA, ALTURA))
 
-# Loop principal
-enquanto_rodando = True
+# Retângulos clicáveis (valores ajustados manualmente)
+botao_novo_jogo = pygame.Rect(30, 337, 400, 50)
+botao_continuar = pygame.Rect(30, 408, 400, 50)
+botao_opcoes = pygame.Rect(30, 480, 400, 50)
+botao_sair = pygame.Rect(30, 553, 400, 50)
 
-while enquanto_rodando:
-   
-    clock.tick(FPS)
+def desenhar_menu():
+    tela.blit(fundo, (0, 0))
+    # (Opcional) para depuração: mostrar as áreas clicáveis
+    pygame.draw.rect(tela, (255, 0, 0), botao_novo_jogo, 2)
+    pygame.draw.rect(tela, (0, 255, 0), botao_continuar, 2)
+    pygame.draw.rect(tela, (0, 0, 255), botao_opcoes, 2)
+    pygame.draw.rect(tela, (255, 255, 0), botao_sair, 2)
 
-    for evento in pygame.event.get():
+def menu_principal():
+    rodando = True
+    while rodando:
+        clock.tick(FPS)
+        desenhar_menu()
+        pygame.display.flip()
 
-        if evento.type == pygame.QUIT:
-            enquanto_rodando = False
-                
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif evento.type == pygame.MOUSEBUTTONDOWN:
+                if botao_novo_jogo.collidepoint(evento.pos):
+                    print("Novo Jogo iniciado!")
+                    rodando = False
+                    # Chame sua função de setup do jogo aqui
+                elif botao_continuar.collidepoint(evento.pos):
+                    print("Continuar jogo (carregar estado salvo)")
+                elif botao_opcoes.collidepoint(evento.pos):
+                    print("Abrir opções (áudio, controles, etc.)")
+                elif botao_sair.collidepoint(evento.pos):
+                    print("Saindo do jogo...")
+                    pygame.quit()
+                    sys.exit()
 
-pygame.quit()
-sys.exit()
+menu_principal()
