@@ -37,7 +37,6 @@ class GerenciadorJogo:
     def executar_turno(self):
         jogador = self.jogador_atual
         print(f"Ações restantes de {jogador.nome}: {jogador.acoes_restantes}")
-
         self.comprar_cartas(jogador)
         self.infectar_cidades()
         self.verificar_derrota()
