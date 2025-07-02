@@ -2,7 +2,11 @@ import pygame
 import sys
 import os
 
-# Inicialização
+from jogo.cidade import criar_cidades
+from jogo.jogador import Jogador
+from jogo.gerenciador_jogo import GerenciadorJogo
+from jogo.constantes import CORES_DOENCAS, CORES_PEOES
+
 pygame.init()
 LARGURA, ALTURA = 1400, 850
 tela = pygame.display.set_mode((LARGURA, ALTURA))
@@ -90,6 +94,76 @@ def desenhar_jogo(jogo):
         texto = fonte.render("Passar Turno", True, (255, 255, 255))
         tela.blit(texto, (botao_passar_turno.x + 10, botao_passar_turno.y + 10))
 
+
+def iniciar_jogo():
+    cidades = criar_cidades()
+    inicio = list(cidades.values())[0]
+
+    jogadores = [
+        Jogador("Jogador 1", "Hornet", inicio),
+        Jogador("Jogador 2", "Grimm", inicio),
+        Jogador("Jogador 3", "Monomon", inicio)
+    ]
+
+    jogo = GerenciadorJogo()
+    jogo.inicializar_cidades(cidades)
+    for j in jogadores:
+        jogo.adicionar_jogador(j)
+
+    estado_jogo["jogo"] = jogo
+    estado_jogo["jogador_ativo"] = jogo.jogador_atual
+
+    loop_jogo()
+
+
+def loop_jogo():
+    jogo = estado_jogo["jogo"]
+    rodando = True
+    while rodando:
+        clock.tick(FPS)
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif evento.type == pygame.MOUSEBUTTONDOWN:
+                pos = evento.pos
+                jogador = jogo.jogador_atual
+
+                if modo_mover["ativo"]:
+                    for cidade in jogador.cidade_atual.conexoes:
+                        x, y = cidade.posicao
+                        distancia = ((pos[0] - x) ** 2 + (pos[1] - y) ** 2) ** 0.5
+                        if distancia <= 10:
+                            jogador.cidade_atual = cidade
+                            jogador.acoes_restantes -= 1
+                            modo_mover["ativo"] = False
+                            print(f"{jogador.nome} se moveu para {cidade.nome}")
+                            break
+
+                elif jogador.acoes_restantes > 0:
+                    for nome, ret in botoes_acoes.items():
+                        if ret.collidepoint(pos):
+                            if nome == "Mover":
+                                print("Clique em uma cidade conectada para se mover.")
+                                modo_mover["ativo"] = True
+                            elif nome == "Tratar":
+                                for cor in jogador.cidade_atual.cubos_doenca:
+                                    if jogador.cidade_atual.cubos_doenca[cor] > 0:
+                                        jogador.cidade_atual.cubos_doenca[cor] -= 1
+                                        jogador.acoes_restantes -= 1
+                                        print(f"{jogador.nome} tratou 1 cubo de {cor} em {jogador.cidade_atual.nome}")
+                                        break
+
+                elif botao_passar_turno.collidepoint(pos):
+                    print("Passando turno...")
+                    jogo.executar_turno()
+                    estado_jogo["jogador_ativo"] = jogo.jogador_atual
+                    modo_mover["ativo"] = False
+
+        desenhar_jogo(jogo)
+        pygame.display.flip()
+
+
 def menu_principal():
     rodando = True
     while rodando:
@@ -103,16 +177,11 @@ def menu_principal():
                 sys.exit()
             elif evento.type == pygame.MOUSEBUTTONDOWN:
                 if botao_novo_jogo.collidepoint(evento.pos):
-                    print("Novo Jogo iniciado!")
-                    rodando = False
-                    # Chame sua função de setup do jogo aqui
-                elif botao_continuar.collidepoint(evento.pos):
-                    print("Continuar jogo (carregar estado salvo)")
-                elif botao_opcoes.collidepoint(evento.pos):
-                    print("Abrir opções (áudio, controles, etc.)")
+                    iniciar_jogo()
                 elif botao_sair.collidepoint(evento.pos):
-                    print("Saindo do jogo...")
                     pygame.quit()
                     sys.exit()
 
-menu_principal()
+
+if __name__ == "__main__":
+    menu_principal()
