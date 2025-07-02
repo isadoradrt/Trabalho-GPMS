@@ -1,15 +1,32 @@
-from baralho import Baralho
+import random
+from jogo.cartas import Carta, TipoCarta
+from jogo.constantes import CIDADES
 
-class BaralhoInfeccao(Baralho):
-    def __init__(self, cartas=None):
-        super().__init__(cartas)
+class BaralhoInfeccao:
+    def __init__(self):
+        self.cartas = []
+        self.descarte = []
+        self.gerar_cartas_infeccao()
 
-    def tirar_carta(self):
-        if not self.cartas:  
-            print("O baralho de infecção está vazio!")
-            return None  
+    def gerar_cartas_infeccao(self):
+        for cidade, cor in CIDADES.items():
+            carta = Carta(nome=cidade, tipo=TipoCarta.CIDADE, cor=cor)
+            self.cartas.append(carta)
+        random.shuffle(self.cartas)
 
-        carta = super().tirar_carta()  
-        if carta:
-            print(f"Carta de infecção tirada!")
-        return carta
+    def comprar(self):
+        if self.cartas:
+            return self.cartas.pop(0)
+        return None
+
+    def descartar(self, carta):
+        self.descarte.append(carta)
+
+    def reciclar_descarte(self, descarte_antigo):
+        self.cartas = descarte_antigo[::-1] + self.cartas
+        random.shuffle(self.cartas)
+
+    def pegar_carta_base(self):
+        if self.cartas:
+            return self.cartas.pop()
+        return None
