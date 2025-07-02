@@ -1,20 +1,29 @@
 import random
+from jogo.cartas import Carta, TipoCarta
+from jogo.constantes import CIDADES, CARTAS_EPIDEMIA, CARTAS_EVENTO
 
-# Classe de Baralho
 class Baralho:
-    def __init__(self, cartas=None):
-        self.cartas = cartas or []
+    def __init__(self):
+        self.cartas = []
+        self.descarte = []
+        self.gerar_cartas()
 
-    def embaralhar(self):
-        # Reembaralha o baralho
+    def gerar_cartas(self):
+        for cidade, cor in CIDADES.items():
+            self.cartas.append(Carta(cidade, TipoCarta.CIDADE, cor))
+
+        for i in range(CARTAS_EVENTO):
+            self.cartas.append(Carta(f"Evento {i+1}", TipoCarta.EVENTO, descricao="Ação especial"))
+
+        for i in range(CARTAS_EPIDEMIA):
+            self.cartas.append(Carta(f"Epidemia {i+1}", TipoCarta.EPIDEMIA))
+
         random.shuffle(self.cartas)
 
-    def tirar_carta(self):
-        # Tira uma carta do baralho
+    def comprar(self):
         if self.cartas:
-            return self.cartas.pop()
+            return self.cartas.pop(0)
         return None
 
-    def adicionar_carta(self, carta):
-        # Adiciona uma carta ao baralho
-        self.cartas.append(carta)
+    def descartar(self, carta):
+        self.descarte.append(carta)
