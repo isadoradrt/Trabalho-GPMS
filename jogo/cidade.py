@@ -1,17 +1,24 @@
-from enum import Enum
+from jogo.constantes import CIDADES
+from jogo.constantes import CORES_DOENCAS
 
-class TipoCarta(Enum):
-    CIDADE = "Cidade"
-    EVENTO = "Evento"
-    EPIDEMIA = "Epidemia"
-
-class Carta:
-    def __init__(self, nome: str, tipo: TipoCarta, cor: str = None, descricao: str = None):
+class Cidade:
+    def __init__(self, nome: str, cor: str, posicao: tuple = (0, 0)):
         self.nome = nome
-        self.tipo = tipo
-        self.cor = cor  # Só faz sentido para cartas de cidade
-        self.descricao = descricao  # Só faz sentido para eventos ou epidemias
+        self.cor = cor
+        self.conexoes = []
+        self.cubos_doenca = {"laranja": 0, "verde": 0, "roxo": 0}
+        self.posicao = posicao
 
-    def __str__(self):
-        return f"{self.tipo.value}: {self.nome}" + (f" ({self.cor})" if self.cor else "")
+    def conectar(self, outra_cidade):
+        if outra_cidade not in self.conexoes:
+            self.conexoes.append(outra_cidade)
+            outra_cidade.conexoes.append(self)
+
+    def adicionar_cubo(self, cor):
+        if cor in self.cubos_doenca:
+            self.cubos_doenca[cor] += 1
+
+    def remover_cubos(self, cor, quantidade=1):
+        if cor in self.cubos_doenca:
+            self.cubos_doenca[cor] = max(0, self.cubos_doenca[cor] - quantidade)
 
