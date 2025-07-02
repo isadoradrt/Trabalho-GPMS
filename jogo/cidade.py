@@ -47,3 +47,40 @@ POSICOES_CIDADES = {
     "Coliseu dos Tolos": (950, 200),
     "Abismo": (800, 750)
 }
+
+CONEXOES = {
+    "Penhascos Uivantes": ["Dirtmouth", "Caminho Verde"],
+    "Dirtmouth": ["Penhascos Uivantes", "Pico de Cristal", "Encruzilhada Esquecida"],
+    "Pico de Cristal": ["Dirtmouth", "Encruzilhada Esquecida", "Terra do Descanso"],
+    "Caminho Verde": ["Jardins da Rainha", "Encruzilhada Esquecida", "Penhascos Uivantes", "Cânion da Névoa"],
+    "Encruzilhada Esquecida": ["Dirtmouth", "Terra do Descanso", "Caminho Verde", "Pico de Cristal", "Ermos Fúngicos"],
+    "Jardins da Rainha": ["Caminho Verde", "Ermos Fúngicos", "Cânion da Névoa", "Ninho Profundo"],
+    "Cânion da Névoa": ["Caminho Verde", "Ermos Fúngicos", "Jardins da Rainha"],
+    "Ermos Fúngicos": ["Cânion da Névoa", "Jardins da Rainha", "Cidade das Lágrimas", "Encruzilhada Esquecida", "Vila dos Louva-a-Deus"],
+    "Cidade das Lágrimas": ["Ermos Fúngicos", "Terra do Descanso", "Borda do Reino", "Hidrovia Real"],
+    "Ninho Profundo": ["Vila dos Louva-a-Deus", "Jardins da Rainha", "Bacia Antiga"],
+    "Hidrovia Real": ["Cidade das Lágrimas", "Vila dos Louva-a-Deus", "Bacia Antiga"],
+    "Bacia Antiga": ["A Colmeia", "Ninho Profundo", "Abismo", "Hidrovia Real"],
+    "Borda do Reino": ["Cidade das Lágrimas", "A Colmeia", "Coliseu dos Tolos"],
+    "A Colmeia": ["Bacia Antiga", "Borda do Reino"],
+    "Terra do Descanso": ["Pico de Cristal", "Cidade das Lágrimas", "Encruzilhada Esquecida"],
+    "Vila dos Louva-a-Deus": ["Ninho Profundo", "Ermos Fúngicos", "Hidrovia Real"],
+    "Coliseu dos Tolos": ["Borda do Reino"],
+    "Abismo": ["Bacia Antiga"]
+}
+
+
+def criar_cidades():
+    cidades = {
+        nome: Cidade(nome, cor, POSICOES_CIDADES[nome])
+        for nome, cor in CIDADES.items()
+        if nome in POSICOES_CIDADES
+    }
+
+    # Conectando as cidades de forma clara e limpa
+    for nome, vizinhas in CONEXOES.items():
+        for vizinha in vizinhas:
+            if nome in cidades and vizinha in cidades:
+                cidades[nome].conectar(cidades[vizinha])
+
+    return cidades
