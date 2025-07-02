@@ -1,13 +1,16 @@
 class Doenca:
-    def __init__(self, nome, cor):
-        self.nome = nome
+    def __init__(self, cor):
         self.cor = cor
-        self.cura_descoberta = False
+        self.curada = False
+        self.erradicada = False
 
-    def descobrir_cura(self):
-        self.cura_descoberta = True
-        print(f"Cura da doença {self.nome} foi descoberta!")
+    def curar(self):
+        self.curada = True
+
+    def erradicar(self):
+        self.erradicada = True
+        self.curada = True  
 
     def __str__(self):
-        status = "Curada" if self.cura_descoberta else "Não curada"
-        return f"{self.nome} ({self.cor}) - {status}"
+        status = "erradicada" if self.erradicada else "curada" if self.curada else "ativa"
+        return f"Doença {self.cor} - {status}"
