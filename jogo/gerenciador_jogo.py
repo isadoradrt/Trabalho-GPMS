@@ -85,3 +85,34 @@ class GerenciadorJogo:
         else:
             cidade.cubos_doenca[cor] += quantidade
             print(f"{cidade.nome} recebeu {quantidade} cubo(s) de {cor}")
+
+
+    def tratar_surtos(self, cidade, cor):
+        if cidade.cubos_doenca[cor] >= 3:
+            print(f"SURTO em {cidade.nome}!")
+            self.surtos += 1
+            for vizinha in cidade.conexoes:
+                if vizinha.cubos_doenca[cor] < 3:
+                    vizinha.cubos_doenca[cor] += 1
+        if self.surtos >= MAX_SURTOS:
+            print(f"{MAX_SURTOS} surtos atingidos. Derrota!")
+            exit()
+
+    def verificar_derrota(self):
+        for cor in self.doencas:
+            total = sum([c.cubos_doenca[cor] for c in self.cidades.values()])
+            if total > MAX_CUBOS_POR_COR:
+                print(f"Esgotaram-se os cubos da doença {cor}. Derrota!")
+                exit()
+
+    def verificar_vitoria(self):
+        if all(doenca.curada for doenca in self.doencas.values()):
+            print("Todas as doenças foram curadas. Vitória!")
+            exit()
+
+    def exibir_estado(self):
+        print(f"Turno: {self.turno} | Surtos: {self.surtos} | Nível de infecção: {self.nivel_infeccao}")
+        for jogador in self.jogadores:
+            print(jogador)
+        for doenca in self.doencas.values():
+            print(doenca)
