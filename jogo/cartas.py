@@ -9,9 +9,13 @@ class Carta:
     def __init__(self, nome: str, tipo: TipoCarta, cor: str = None, descricao: str = None):
         self.nome = nome
         self.tipo = tipo
-        self.cor = cor  # Só faz sentido para cartas de cidade
-        self.descricao = descricao  # Só faz sentido para eventos ou epidemias
+        self.cor = cor
+        self.descricao = descricao
 
     def __str__(self):
-        return f"{self.tipo.value}: {self.nome}" + (f" ({self.cor})" if self.cor else "")
-
+        if self.tipo == TipoCarta.CIDADE:
+            return f"{self.tipo.value}: {self.nome} ({self.cor})"
+        elif self.tipo == TipoCarta.EVENTO:
+            return f"{self.tipo.value}: {self.nome} - {self.descricao}"
+        else:
+            return f"{self.tipo.value}: {self.nome}"
