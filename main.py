@@ -4,7 +4,7 @@ import os
 
 # Inicialização
 pygame.init()
-LARGURA, ALTURA = 1280, 720
+LARGURA, ALTURA = 1400, 850
 tela = pygame.display.set_mode((LARGURA, ALTURA))
 pygame.display.set_caption("Pandemic: Hollow Knight")
 FPS = 60
