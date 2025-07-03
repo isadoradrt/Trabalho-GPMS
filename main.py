@@ -8,7 +8,7 @@ from jogo.gerenciador_jogo import GerenciadorJogo
 from jogo.constantes import CORES_DOENCAS, CORES_PEOES
 
 pygame.init()
-LARGURA, ALTURA = 1400, 850
+LARGURA, ALTURA = 1280, 720  
 tela = pygame.display.set_mode((LARGURA, ALTURA))
 pygame.display.set_caption("Pandemic: Hollow Knight")
 FPS = 60
@@ -20,8 +20,10 @@ caminho_fundo = os.path.join(caminho_base, "designs", "mainscreen.png")
 fundo = pygame.image.load(caminho_fundo).convert()
 fundo = pygame.transform.scale(fundo, (LARGURA, ALTURA))
 
-botao_novo_jogo = pygame.Rect(80, 410, 300, 40)
-botao_sair = pygame.Rect(80, 650, 300, 40)
+#(x, y, largura, altura)
+botao_novo_jogo = pygame.Rect(70, 330, 300, 70)
+botao_sair = pygame.Rect(130, 550, 150, 60)
+
 
 botoes_acoes = {
     "Mover": pygame.Rect(50, ALTURA - 60, 120, 40),
@@ -68,7 +70,6 @@ def desenhar_jogo(jogo):
         cor_peao = CORES_PEOES.get(jogador.nome, (255, 255, 0))
         pygame.draw.circle(tela, cor_peao, (x + i * 8, y - 15), 5)
 
-        # Desenhar bolinha ao lado do nome na parte superior
         pygame.draw.circle(tela, cor_peao, (10, 20 + i * 25), 6)
 
         cartas = ", ".join([c.nome for c in jogador.cartas])
